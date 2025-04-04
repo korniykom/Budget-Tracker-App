@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-finance
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: finance_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - finance-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-finance
+    ports:
+      - "5672:5672" # AMQP порт
+      - "15672:15672" # HTTP порт для управління
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    networks:
+      - finance-network
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+
+networks:
+  finance-network:
+    driver: bridge
